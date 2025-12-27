@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Админ пользователь
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+// Услуги студии
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Работы/Портфолио
+model Work {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  category    String
+  description String
+  task        String?
+  approach    String?
+  result      String?
+  coverImage  String
+  images      WorkImage[]
+  isActive    Boolean     @default(true)
+  isFeatured  Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// Изображения для работ
+model WorkImage {
+  id     String  @id @default(cuid())
+  url    String
+  alt    String?
+  order  Int     @default(0)
+  work   Work    @relation(fields: [workId], references: [id], onDelete: Cascade)
+  workId String
+}
+
+// FAQ
+model FAQ {
+  id       String  @id @default(cuid())
+  question String
+  answer   String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+}
+
+// Настройки сайта
+model Settings {
+  id             String  @id @default(cuid())
+  heroTitle      String  @default("GLINA")
+  heroSubtitle   String  @default("Дизайн-студия")
+  aboutText      String?
+  telegramMain   String?
+  telegramSecond String?
+  phoneMain      String?
+  phoneSecond    String?
+  email          String?
+  city           String  @default("Москва, Россия")
+}
