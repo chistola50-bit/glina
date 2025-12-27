@@ -1,14 +1,12 @@
-import Prisma from '@prisma/client'
-
-type PrismaClientType = InstanceType<typeof Prisma.PrismaClient>
+import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClientType | undefined
+  prisma: PrismaClient | undefined
 }
 
 export const prisma =
   globalForPrisma.prisma ??
-  new Prisma.PrismaClient()
+  new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
